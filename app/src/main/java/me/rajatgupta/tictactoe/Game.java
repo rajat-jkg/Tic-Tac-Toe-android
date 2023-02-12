@@ -1,9 +1,10 @@
+// this is the game activity where the actual game is played
+
 package me.rajatgupta.tictactoe;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -11,63 +12,37 @@ import android.widget.TextView;
 
 
 public class Game extends AppCompatActivity {
-    char [] status = new char[9];
-    byte rFlag = 0, tc=0;
+    byte winFlag = 0, tc=0;
     char Turn;
     String msg;
-    TextView chance, Result;
+    TextView chance, result;
     public void clickAction(View v){
         ViewGroup parent = (ViewGroup)v;
-        TextView t = (TextView) parent.getChildAt(0);
-        if((t.getText().toString()).length()==0 && rFlag==0)
+        TextView t = (TextView) parent.getChildAt(0); //fetching the TextView where the click has occurred
+        if((t.getText().toString()).length()==0 && winFlag ==0)
         {
             String T1 = Turn+"";
             t.setText(T1);
-            status[((int) t.getId()%10)]=Turn;
-            tc++;
-            Log.d("idFetch", String.format("%s",tc));
-            if(status[0]==status[1]&&status[1]==status[2]&& status[0]!='\0'){
-                String winner = status[0]+" is the winner";
-                Result.setText(winner);
-                rFlag = 1;
-            }
-            else if(status[3]==status[4]&&status[4]==status[5]&& status[3]!='\0'){
-                String winner = status[4]+" is the winner";
-                Result.setText(winner);
-                rFlag = 1;
-            }
-            else if(status[6]==status[7]&&status[7]==status[8]&& status[8]!='\0'){
-                String winner = status[8]+" is the winner";
-                Result.setText(winner);
-                rFlag = 1;
-            }
-            else if(status[0]==status[4]&&status[4]==status[8]&& status[8]!='\0'){
-                String winner = status[4]+" is the winner";
-                Result.setText(winner);
-                rFlag = 1;
-            }
-            else if(status[2]==status[4]&&status[4]==status[6]&& status[6]!='\0'){
-                String winner = status[4]+" is the winner";
-                Result.setText(winner);
-                rFlag = 1;
-            }
-            else if(status[0]==status[3]&&status[6]==status[3]&& status[0]!='\0'){
-                String winner = status[0]+" is the winner";
-                Result.setText(winner);
-                rFlag = 1;
-            }
-            else if(status[1]==status[4]&&status[4]==status[7]&& status[7]!='\0'){
-                String winner = status[4]+" is the winner";
-                Result.setText(winner);
-                rFlag = 1;
-            }
-            else if(status[2]==status[5]&&status[5]==status[8]&& status[8]!='\0'){
-                String winner = status[5]+" is the winner";
-                Result.setText(winner);
-                rFlag = 1;
+            tc++; //counting how many turns occurred
+
+            if(winCheck(R.id.C0,R.id.C1,R.id.C2)||
+                    winCheck(R.id.C3,R.id.C4,R.id.C5)||
+                    winCheck(R.id.C6,R.id.C7,R.id.C8)||
+                    winCheck(R.id.C0,R.id.C3,R.id.C6)||
+                    winCheck(R.id.C1,R.id.C4,R.id.C7)||
+                    winCheck(R.id.C2,R.id.C5,R.id.C8)||
+                    winCheck(R.id.C0,R.id.C4,R.id.C8)||
+                    winCheck(R.id.C6,R.id.C4,R.id.C2)
+
+
+            ){
+                winFlag = 1; // setting the winning event
             }
 
-            if(rFlag==0){
+
+            if(winFlag ==0)//checking if the game is over. If not control goes in
+            {
+                //Switching players' turn
                 if (Turn == 'X') Turn = 'O';
                 else Turn = 'X';
                 msg = "Chance for " + Turn;
@@ -77,6 +52,7 @@ public class Game extends AppCompatActivity {
                     chance.setText(mess);
                 }
             }
+            // if the game is over
             else {
                 chance.setText("");
             }
@@ -94,7 +70,26 @@ public class Game extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
         chance = findViewById(R.id.Chance);
-        Result = findViewById(R.id.Resut);
+        result = findViewById(R.id.Result);
         Turn = 'X';
+    }
+
+
+    // method to check is the winning event has occurred
+    // this also displays who is the winner
+    Boolean winCheck(int a, int b, int c){
+        TextView V1 = findViewById(a);
+        TextView V2 = findViewById(b);
+        TextView V3 = findViewById(c);
+        String A = V1.getText().toString();
+        String B = V2.getText().toString();
+        String C = V3.getText().toString();
+
+        if(A.equals(B)&&B.equals(C)&&A.length()!=0) {
+            String message = A+" is the winner";
+            result.setText(message);
+            return true;
+        }
+        else return false;
     }
 }
